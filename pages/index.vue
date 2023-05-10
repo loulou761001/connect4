@@ -1,126 +1,9 @@
 <template>
-  <div v-if="!ready">
-    <form @submit.prevent="makeReady" class="container mx-auto px-4">
-      <div class="grid gap-6 mb-6 md:grid-cols-2">
-        <div>
-          <label
-            for="player0-name"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Player 0 ({{ players[0].wins }} victoire{{
-              players[0].wins > 1 ? 's' : ''
-            }}) :</label
-          >
-          <input
-            name="player0-name"
-            type="text"
-            id="player0-name"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="John"
-            required
-            v-model="players[0].name"
-          />
-        </div>
-        <div>
-          <label
-            for="player1-name"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Player 1 ({{ players[1].wins }} victoire{{
-              players[1].wins > 1 ? 's' : ''
-            }}) :</label
-          >
-          <input
-            name="player1-name"
-            type="text"
-            id="player1-name"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Bernard"
-            required
-            v-model="players[1].name"
-          />
-        </div>
-        <div>
-          <label
-            for="puissance-win"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Puissance pour gagner :
-          </label>
-          <input
-            name="puissance-win"
-            type="number"
-            id="puissance-win"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="4"
-            required
-            v-model="length"
-            max="20"
-            min="2"
-          />
-        </div>
-        <div>
-          <label
-            for="rows"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Rows :
-          </label>
-          <input
-            name="rows"
-            type="number"
-            id="rows"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="4"
-            required
-            v-model="board.rows"
-            max="30"
-            min="2"
-          />
-        </div>
-        <div>
-          <label
-            for="columns"
-            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >Columns :
-          </label>
-          <input
-            name="columns"
-            type="number"
-            id="columns"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="4"
-            required
-            v-model="board.columns"
-            max="30"
-            min="2"
-          />
-        </div>
-      </div>
-      <!--      <label for=""-->
-      <!--        >Player 0 ({{ players[0].wins }} victoire{{-->
-      <!--          players[0].wins > 1 ? 's' : ''-->
-      <!--        }}) :-->
-      <!--      </label>-->
-      <!--      <input required type="text" v-model="players[0].name" />-->
-      <!--      <label for=""-->
-      <!--        >Player 1 ({{ players[1].wins }} victoire{{-->
-      <!--          players[1].wins > 1 ? 's' : ''-->
-      <!--        }}) :-->
-      <!--      </label>-->
-      <!--      <input required type="text" v-model="players[1].name" />-->
-      <!--      <label for="">Puissance pour gagner : </label>-->
-      <!--      <input required type="number" v-model="length" max="20" min="2" />-->
-      <!--      <label for="">Rows : </label>-->
-      <!--      <input required type="number" v-model="board.rows" max="30" min="2" />-->
-      <!--      <label for="">Columns : </label>-->
-      <!--      <input required type="number" v-model="board.columns" max="30" min="2" />-->
-      <input
-        type="submit"
-        class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
-        style="cursor: pointer"
-        value="Go !"
-      />
-    </form>
-  </div>
+  <initial-form v-if="!ready" :players="players" @makeReady="makeReady" />
   <div v-else class="board container mx-auto px-4">
-    <p>A toi de jouer, {{ players[currentPlayer].name }}</p>
+    <h2 class="text-4xl font-extrabold dark:text-white py-3">
+      A toi de jouer, {{ players[currentPlayer].name }}
+    </h2>
     <div class="row" v-for="(row, rowIndex) in board.rows">
       <div
         v-for="(col, colIndex) in board.columns"
@@ -144,28 +27,12 @@
         ></div>
       </div>
     </div>
-    <div v-if="winner || draw">
-      <h3
-        v-if="winner"
-        class="mb-4 text-2xl font-extrabold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white"
-      >
-        Félicitations, {{ players[currentPlayer].name }} !
-      </h3>
-      <h3
-        v-if="draw"
-        class="mb-4 text-2xl font-extrabold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white"
-      >
-        Égalité !
-      </h3>
-
-      <button
-        @click="restart"
-        style="cursor: pointer"
-        class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
-      >
-        Recommencer
-      </button>
-    </div>
+    <end-screen
+      v-if="winner || draw"
+      :status="winner ? 'winner' : 'draw'"
+      :current-player="players[currentPlayer]"
+      @restart="restart"
+    />
   </div>
 </template>
 
@@ -173,6 +40,7 @@
 export default {
   name: 'IndexPage',
   layout: 'default',
+
   data() {
     return {
       turn: 1,
@@ -190,7 +58,6 @@ export default {
         { name: '', wins: 0 },
       ],
       length: 4,
-      already: [],
     }
   },
   mounted() {},
@@ -205,20 +72,19 @@ export default {
       this.ready = false
       this.displayedBoard = []
     },
-    makeReady() {
-      this.board.rows = parseFloat(this.board.rows)
-      this.board.columns = parseFloat(this.board.columns)
-      this.length = parseFloat(this.length)
+    makeReady(e) {
+      this.board.rows = parseFloat(e.board.rows)
+      this.board.columns = parseFloat(e.board.columns)
+      this.length = parseFloat(e.length)
+      this.players = e.modifiedPlayers
       this.ready = true
       this.generateBoard()
     },
     checkLeft(rowParam, colParam) {
-      console.log('checkLeft')
       let count = 0
 
       for (let check = 0; check < this.length; check++) {
         let currentCol = colParam - check
-
         if (
           currentCol >= 0 &&
           this.displayedBoard[rowParam][currentCol] === this.currentPlayer
@@ -353,30 +219,19 @@ export default {
       return count
     },
     checkHorizontal(row, col) {
-      console.log('hor', this.checkLeft(row, col) + this.checkRight(row, col))
       return this.checkLeft(row, col) + this.checkRight(row, col)
     },
     checkVertical(row, col) {
-      console.log('vert', this.checkUp(row, col) + this.checkDown(row, col))
       return this.checkUp(row, col) + this.checkDown(row, col)
     },
     checkDiagonalUpRightDownLeft(row, col) {
-      console.log(
-        'diagUR-DL',
-        this.checkUp(row, col) + this.checkDown(row, col)
-      )
       return this.checkUpRight(row, col) + this.checkDownLeft(row, col)
     },
     checkDiagonalUpLeftDownRight(row, col) {
-      console.log(
-        'diagUR-DL',
-        this.checkUp(row, col) + this.checkDown(row, col)
-      )
       return this.checkUpLeft(row, col) + this.checkDownRight(row, col)
     },
     getLowestCase(col) {
       for (let i = this.board.rows - 1; i >= 0; i--) {
-        console.log(this.displayedBoard[i][col])
         if (
           this.displayedBoard[i][col] !== 0 &&
           this.displayedBoard[i][col] !== 1
@@ -385,13 +240,13 @@ export default {
         }
       }
     },
+    addWin() {
+      this.players[this.currentPlayer].wins++
+      this.winner = true
+    },
     checkWinner(col) {
       let row = this.getLowestCase(col)
       if (row === undefined || this.winner) {
-        return
-      }
-      if (this.checkDraw()) {
-        this.draw = true
         return
       }
       if (
@@ -402,31 +257,30 @@ export default {
       }
       this.displayedBoard[row][col] = this.currentPlayer
       this.$set(this.displayedBoard[row], col, this.currentPlayer)
-      console.log(this.displayedBoard)
       let count = 0
       count = this.checkHorizontal(row, col)
       if (count > this.length) {
-        this.players[this.currentPlayer].wins++
-        this.winner = true
+        this.addWin()
         return true
       }
       count = this.checkVertical(row, col)
       if (count > this.length) {
-        this.players[this.currentPlayer].wins++
-        this.winner = true
+        this.addWin()
         return true
       }
       count = this.checkDiagonalUpRightDownLeft(row, col)
       if (count > this.length) {
-        this.players[this.currentPlayer].wins++
-        this.winner = true
+        this.addWin()
         return true
       }
       count = this.checkDiagonalUpLeftDownRight(row, col)
       if (count > this.length) {
-        this.players[this.currentPlayer].wins++
-        this.winner = true
+        this.addWin()
         return true
+      }
+      if (this.checkDraw()) {
+        this.draw = true
+        return
       }
       this.turn++
       this.currentPlayer === 1
@@ -448,18 +302,6 @@ export default {
 </script>
 
 <style scoped>
-/* ----------------------------------------------
- * Generated by Animista on 2023-5-10 12:9:52
- * Licensed under FreeBSD License.
- * See http://animista.net/license for more info.
- * w: http://animista.net, t: @cssanimista
- * ---------------------------------------------- */
-
-/**
- * ----------------------------------------
- * animation bounce-in-top
- * ----------------------------------------
- */
 @-webkit-keyframes bounce-in-top {
   0% {
     -webkit-transform: translateY(-500px);
@@ -565,8 +407,14 @@ export default {
   }
 }
 
+.board {
+  margin-bottom: 15px;
+}
 .row {
   display: flex;
+}
+.end {
+  margin-top: 15px;
 }
 .case {
   outline: 1px solid black;
@@ -592,21 +440,18 @@ export default {
   height: 100%;
   width: 100%;
   border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  -webkit-animation: bounce-in-top 1.1s both;
 }
 .player0 {
   background-color: yellow;
-  -webkit-animation: bounce-in-top 1.1s both;
   animation: bounce-in-top 1.1s both;
   background-image: url('assets/img/player0.png');
-  background-size: cover;
-  background-position: center;
 }
 .player1 {
   background-color: red;
-  -webkit-animation: bounce-in-top 1.1s both;
   animation: bounce-in-top 1.1s both;
   background-image: url('assets/img/player1.png');
-  background-size: cover;
-  background-position: center;
 }
 </style>
