@@ -408,6 +408,7 @@ export default {
 }
 
 .board {
+  overflow-x: auto;
   margin-bottom: 15px;
 }
 .row {

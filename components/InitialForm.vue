@@ -1,9 +1,6 @@
 <template>
   <div>
-    <form
-      @submit.prevent="$emit('makeReady', info)"
-      class="container mx-auto px-4"
-    >
+    <form @submit.prevent="makeReady" class="container mx-auto px-4">
       <div class="grid gap-6 mb-6 md:grid-cols-2">
         <div>
           <label
@@ -102,6 +99,10 @@
         style="cursor: pointer"
         value="Go !"
       />
+      <p v-if="error" class="error">
+        Veuillez séléectionner un plus grand nombre de colonnes ou de lignes, ou
+        diminuer la puissance.
+      </p>
     </form>
   </div>
 </template>
@@ -117,6 +118,7 @@ export default {
   },
   data() {
     return {
+      error: false,
       info: {
         modifiedPlayers: this.players,
         length: 4,
@@ -127,7 +129,24 @@ export default {
       },
     }
   },
+  methods: {
+    makeReady() {
+      if (
+        parseInt(this.info.length) > parseInt(this.info.board.rows) &&
+        parseInt(this.info.length) > parseInt(this.info.board.columns)
+      ) {
+        this.error = true
+      } else {
+        this.error = false
+        this.$emit('makeReady', this.info)
+      }
+    },
+  },
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.error {
+  color: darkred;
+}
+</style>
