@@ -144,12 +144,20 @@
         ></div>
       </div>
     </div>
-    <div v-if="winner">
-      <h1
-        class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
+    <div v-if="winner || draw">
+      <h3
+        v-if="winner"
+        class="mb-4 text-2xl font-extrabold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white"
       >
         Félicitations, {{ players[currentPlayer].name }} !
-      </h1>
+      </h3>
+      <h3
+        v-if="draw"
+        class="mb-4 text-2xl font-extrabold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-4xl dark:text-white"
+      >
+        Égalité !
+      </h3>
+
       <button
         @click="restart"
         style="cursor: pointer"
@@ -167,6 +175,8 @@ export default {
   layout: 'default',
   data() {
     return {
+      turn: 1,
+      draw: false,
       ready: false,
       winner: false,
       board: {
@@ -185,8 +195,13 @@ export default {
   },
   mounted() {},
   methods: {
+    checkDraw() {
+      return this.turn >= this.board.columns * this.board.rows
+    },
     restart() {
+      this.turn = 1
       this.winner = false
+      this.draw = false
       this.ready = false
       this.displayedBoard = []
     },
@@ -375,6 +390,10 @@ export default {
       if (row === undefined || this.winner) {
         return
       }
+      if (this.checkDraw()) {
+        this.draw = true
+        return
+      }
       if (
         this.displayedBoard[row][col] === 0 ||
         this.displayedBoard[row][col] === 1
@@ -409,6 +428,7 @@ export default {
         this.winner = true
         return true
       }
+      this.turn++
       this.currentPlayer === 1
         ? (this.currentPlayer = 0)
         : (this.currentPlayer = 1)
